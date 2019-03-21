@@ -51,7 +51,6 @@ namespace MTNELL004{
 		priority_queue<HuffmanNode, std::vector<HuffmanNode>, compare> pq;
 		size_t index = 0;
 		for (auto& item: freqmap) {
-    		//cout << item.first<<" "<<item.second<<endl;	
     		shared_ptr<HuffmanNode> new_node = make_shared<HuffmanNode>(item.first,item.second, index);
     		pq.push(*new_node);
     		nodes.push_back(new_node);
@@ -71,14 +70,9 @@ namespace MTNELL004{
     		nodes.push_back(new_node);
     		pq.push(*new_node);
     		assignChildren(index, indLeft, indRight);
-    		//cout<<"new node index: "<<index<<" left node index: "<<indLeft<<" right node index: "<<indRight<<endl;
     		index++;
     	}
     	index_of_head = index-1;
-
-    	for(size_t i = 0; i<= index_of_head; i++){
-    		cout<<"node "<<i<<" has letter "<<nodes[i]->letter<<" and frequency "<<nodes[i]->frequency<<endl;//" and has left child: "<<(nodes[i]->left)<<endl;//->index<<" and has right child: "<<nodes[i]->right->index<<endl;
-    	}
 		
 	}
 
@@ -111,8 +105,42 @@ namespace MTNELL004{
     	}
 	}
 
-	
+	void HuffmanTree::compressData(string input_file, string output_file){
 
+		//construct buffer
+		string buffer = "";
 
+		ifstream file_in (input_file);
+		if(!file_in){
+			cerr << "File open failed"<< endl;
+		}
+		else{
+			char c;
+			while(!file_in.eof()){
+				file_in >> c;
+				buffer.append(codeTable[c]);
+			}
+			file_in.close();
+		}
+		
+		char * cstr = new char [buffer.length()+1];
+  		std::strcpy (cstr, buffer.c_str());
+  		cout<<cstr<<endl;
+
+		string buffer_file = "buffer.dat";
+		ofstream outputBufferFile;
+		outputBufferFile.open(buffer_file);
+		outputBufferFile.write(cstr, buffer.length());
+		outputBufferFile.close();
+
+		output_file.append(".hdr");
+		ofstream myfile;
+		myfile.open(output_file);
+		myfile << "Field Count: "<<codeTable.size()<<"\n"<<endl;
+		for( const auto& n : codeTable ) {
+       	 	myfile << "Character: " << n.first << " Code:" << n.second << "\n";
+    	}
+		myfile.close();
+	}
 
 }

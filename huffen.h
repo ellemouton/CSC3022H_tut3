@@ -40,7 +40,7 @@ namespace MTNELL004{
 			void assignChildren(size_t ind1, size_t indLeft, size_t indRight);
 			void buildTree(void);
 			void buildCodeTable(void);
-			void compressData(void);
+			void compressData(std::string input_file, std::string output_file);
 			void recurse(size_t index, std::string code);
 
 			
@@ -59,19 +59,11 @@ namespace MTNELL004{
 			char letter;
 
 			//constructor 1
-			HuffmanNode(char let, int freq, size_t ind): letter(let), frequency(freq), index(ind){
-				//std::cout<<"creating "<<letter<<std::endl;
-			}
+			HuffmanNode(char let, int freq, size_t ind): letter(let), frequency(freq), index(ind){}
 			//constructor 2
-			HuffmanNode(int freq, size_t ind): frequency(freq), index(ind){
-				
-			}
-
-
+			HuffmanNode(int freq, size_t ind): frequency(freq), index(ind){}
 			//destructor
-			~HuffmanNode(void){ // dont call delete here
-				//std::cout<<"killing "<<letter<<std::endl;
-			}
+			~HuffmanNode(void){}
 
 			/*
 			//copy constructor
@@ -89,7 +81,7 @@ namespace MTNELL004{
 
 			// Overload < operator to compare two nodes
 			//bool operator<(const HuffmanNode& n);
-			
+
 			
 
 	};
