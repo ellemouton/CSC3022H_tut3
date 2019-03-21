@@ -82,8 +82,33 @@ namespace MTNELL004{
 		
 	}
 
-	void buildCodeTable(void){
+	void HuffmanTree::recurse(size_t index, string code){
 		
+		if(nodes[index]->left == NULL){
+			char let = nodes[index]->letter;
+			codeTable[let] = code;
+		}
+		else{
+			size_t indLeft = nodes[index]->left->index;
+			size_t indRight = nodes[index]->right->index;
+			string strLeft = code; strLeft.append("0");
+			string strRight = code; strRight.append("1");
+
+			recurse(indLeft, strLeft);
+			recurse(indRight, strRight);
+
+		}
+
+	}
+
+	void HuffmanTree::buildCodeTable(void){
+		string code = "0";
+		size_t index = index_of_head;
+		recurse(index, code);
+
+		for( const auto& n : codeTable ) {
+       	 	std::cout << "Key:[" << n.first << "] Value:[" << n.second << "]\n";
+    	}
 	}
 
 	

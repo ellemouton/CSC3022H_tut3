@@ -24,6 +24,8 @@ namespace MTNELL004{
 			std::unordered_map<char, int> freqmap;
 			std::vector<std::shared_ptr<HuffmanNode>> nodes;
 			size_t index_of_head;
+			std::unordered_map<char, std::string> codeTable;
+
 		public:
 		
 			//constructor 
@@ -36,9 +38,10 @@ namespace MTNELL004{
 
 			void buildMap(std::string input_file);
 			void assignChildren(size_t ind1, size_t indLeft, size_t indRight);
-			void buildTree();
-			buildCodeTable()
+			void buildTree(void);
+			void buildCodeTable(void);
 			void compressData(void);
+			void recurse(size_t index, std::string code);
 
 			
 	};
@@ -86,7 +89,7 @@ namespace MTNELL004{
 
 			// Overload < operator to compare two nodes
 			//bool operator<(const HuffmanNode& n);
-
+			
 			
 
 	};
