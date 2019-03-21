@@ -8,15 +8,12 @@ int main(int argc, char * argv[]){
 		string input_file = argv[1];
 		string output_file = argv[2];
 
-		//build frequency table using unordered map
-		unordered_map<char, int> freq_map = MTNELL004::buildMap(input_file);
-
-		//build the tree
-
-		//build code table
+		MTNELL004::HuffmanTree tree;
+		tree.buildMap(input_file);
+		tree.buildTree();
+		tree.buildCodeTable();
 
 		//create output
-
 
 	}
 	else{
