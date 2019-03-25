@@ -10,5 +10,11 @@ huffencode.o: huffencode.cpp huffen.h
 huffen.o: huffen.cpp huffen.h
 	$(CC) $(CCFLAGS) -c huffen.cpp -o huffen.o
 
+unitTests: unitTests.o  
+	$(CC) $(CCFLAGS) unitTests.o -o unitTests
+
+unitTests.o: unitTests.cpp
+	$(CC) $(CCFLAGS) -c unitTests.cpp -o unitTests.o
+
 clean:
 	rm *.o

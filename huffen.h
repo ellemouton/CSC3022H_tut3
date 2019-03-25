@@ -22,12 +22,13 @@ namespace MTNELL004{
 	
 	class HuffmanTree{
 		private:
-			std::unordered_map<char, int> freqmap;
+			
 			std::unordered_map<char, std::string> codeTable;
 			std::shared_ptr<HuffmanNode> head;
+			std::unordered_map<char, int> freqmap;
 
 		public:
-		
+
 			//constructor 
 			HuffmanTree(){}
 
@@ -41,14 +42,14 @@ namespace MTNELL004{
 			void buildCodeTable(void);
 			void compressData(std::string input_file, std::string output_file);
 			void recurse(std::string code, std::shared_ptr<HuffmanNode> &node);
-
+			std::unordered_map<char, int> getFreqMap(void); //for unit tests
+			std::shared_ptr<HuffmanNode> getHeadNode(void); //for unit tests
 			
 	};
 
 	class HuffmanNode{
 		friend class HuffmanTree;
 		private:
-
 			std::shared_ptr<HuffmanNode> left;
 			std::shared_ptr<HuffmanNode> right;
 
@@ -57,11 +58,15 @@ namespace MTNELL004{
 			char letter;
 
 			//constructor 1
-			HuffmanNode(char let, int freq): letter(let), frequency(freq){}
+			HuffmanNode(char let, int freq): letter(let), frequency(freq){
+				//std::cout<<"creating "<<letter<<" "<<frequency<<std::endl;
+			}
 			//constructor 2
 			HuffmanNode(int freq): frequency(freq){}
 			//destructor
-			~HuffmanNode(void){}
+			~HuffmanNode(void){
+				//std::cout<<"killing "<<letter<<" "<<frequency<<std::endl;
+			}
 
 			/*
 			//copy constructor
@@ -80,8 +85,8 @@ namespace MTNELL004{
 			// Overload < operator to compare two nodes
 			//bool operator<(const HuffmanNode& n);
 
-			
-
+			std::shared_ptr<HuffmanNode> getLeft(void); //for unit tests
+			std::shared_ptr<HuffmanNode> getRight(void); //for unit tests
 	};
 
 	

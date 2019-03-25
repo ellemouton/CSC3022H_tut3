@@ -23,6 +23,7 @@ namespace MTNELL004{
 				file >> c;
 				freqmap[c]++;
 			}
+			freqmap[c]--;
 			file.close();
 		}
 	}
@@ -30,7 +31,7 @@ namespace MTNELL004{
 	void HuffmanTree::buildTree(){
 		//create a priority tree
 		priority_queue<HuffmanNode, std::vector<HuffmanNode>, compare> pq; //automatic variable
-		
+
 		for (auto& item: freqmap) {
     		HuffmanNode new_node(item.first,item.second);
     		pq.push(new_node);
@@ -43,16 +44,14 @@ namespace MTNELL004{
     		int sum_freq = n1.frequency+n2.frequency;
 
     		HuffmanNode new_node(sum_freq);
-    		
+
     		new_node.left = make_shared<HuffmanNode>(n1);
     		new_node.right = make_shared<HuffmanNode>(n2);
     		pq.push(new_node);
     	}
 
     	head = make_shared<HuffmanNode>(pq.top());
-		
 	}
-
 	void HuffmanTree::recurse(string code, shared_ptr<HuffmanNode> &node){
 		
 		if(node->left == NULL){
@@ -112,7 +111,25 @@ namespace MTNELL004{
 		for( const auto& n : codeTable ) {
        	 	myfile << "Character: " << n.first << " Code:" << n.second << "\n";
     	}
+    	double cc = (buffer.length()/8) + (buffer.length()%8 ? 1 : 0);
+    	myfile << "Compression Ratio: " << cc<< "\n";
+
 		myfile.close();
+	}
+
+	unordered_map<char, int> HuffmanTree::getFreqMap(void){
+		return freqmap;
+	}
+
+	shared_ptr<HuffmanNode> HuffmanTree::getHeadNode(void){
+		return head;
+	}
+
+	shared_ptr<HuffmanNode> HuffmanNode::getLeft(void){
+		return left;
+	}
+	shared_ptr<HuffmanNode> HuffmanNode::getRight(void){
+		return right;
 	}
 
 }
