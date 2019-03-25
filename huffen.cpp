@@ -7,25 +7,12 @@
 using namespace std;
 
 namespace MTNELL004{
-/*
-	bool operator<(const HuffmanNode& a, const HuffmanNode& b){
-		cout<<"using custom <"<<endl;
-		return a.frequency < b.frequency;
-	}
-
-	bool compare(const HuffmanNode& a, const HuffmanNode& b){
-		cout<<"using custom compare"<<endl;
-		if(a<b) return true;
-		else return false;
-	}
-*/
 
     bool compare::operator()(const HuffmanNode& a, const HuffmanNode& b){
         return a.frequency > b.frequency; 
     } 
 
 	void HuffmanTree::buildMap(string input_file){
-
 		ifstream file (input_file);
 		if(!file){
 			cerr << "File open failed"<< endl;
@@ -38,67 +25,53 @@ namespace MTNELL004{
 			}
 			file.close();
 		}
-
-	}
-
-	void HuffmanTree::assignChildren(size_t ind1, size_t indLeft, size_t indRight){
-		nodes[ind1]-> left = nodes[indLeft];
-		nodes[ind1]-> right = nodes[indRight];
 	}
 
 	void HuffmanTree::buildTree(){
 		//create a priority tree
-		priority_queue<HuffmanNode, std::vector<HuffmanNode>, compare> pq;
-		size_t index = 0;
+		priority_queue<HuffmanNode, std::vector<HuffmanNode>, compare> pq; //automatic variable
+		
 		for (auto& item: freqmap) {
-    		shared_ptr<HuffmanNode> new_node = make_shared<HuffmanNode>(item.first,item.second, index);
-    		pq.push(*new_node);
-    		nodes.push_back(new_node);
-    		index++;
+    		HuffmanNode new_node(item.first,item.second);
+    		pq.push(new_node);
     	}
 
     	while(pq.size()>1){
-    		size_t indLeft = pq.top().index; int freq1 = pq.top().frequency;
-    		pq.pop();
+    		HuffmanNode n1 = pq.top(); pq.pop();
+    		HuffmanNode n2 = pq.top(); pq.pop();
 
-    		size_t indRight = pq.top().index; int freq2 = pq.top().frequency;
-    		pq.pop();
+    		int sum_freq = n1.frequency+n2.frequency;
 
-    		int sum_freq = freq1+freq2;
-
-    		shared_ptr<HuffmanNode> new_node = make_shared<HuffmanNode>(sum_freq, index);
-    		nodes.push_back(new_node);
-    		pq.push(*new_node);
-    		assignChildren(index, indLeft, indRight);
-    		index++;
+    		HuffmanNode new_node(sum_freq);
+    		
+    		new_node.left = make_shared<HuffmanNode>(n1);
+    		new_node.right = make_shared<HuffmanNode>(n2);
+    		pq.push(new_node);
     	}
-    	index_of_head = index-1;
+
+    	head = make_shared<HuffmanNode>(pq.top());
 		
 	}
 
-	void HuffmanTree::recurse(size_t index, string code){
+	void HuffmanTree::recurse(string code, shared_ptr<HuffmanNode> &node){
 		
-		if(nodes[index]->left == NULL){
-			char let = nodes[index]->letter;
+		if(node->left == NULL){
+			char let = node->letter;
 			codeTable[let] = code;
 		}
 		else{
-			size_t indLeft = nodes[index]->left->index;
-			size_t indRight = nodes[index]->right->index;
 			string strLeft = code; strLeft.append("0");
 			string strRight = code; strRight.append("1");
 
-			recurse(indLeft, strLeft);
-			recurse(indRight, strRight);
-
+			recurse(strLeft, node->left);
+			recurse(strRight, node->right);
 		}
-
 	}
 
 	void HuffmanTree::buildCodeTable(void){
 		string code = "0";
-		size_t index = index_of_head;
-		recurse(index, code);
+
+		recurse(code, head);
 
 		for( const auto& n : codeTable ) {
        	 	std::cout << "Key:[" << n.first << "] Value:[" << n.second << "]\n";
@@ -106,7 +79,6 @@ namespace MTNELL004{
 	}
 
 	void HuffmanTree::compressData(string input_file, string output_file){
-
 		//construct buffer
 		string buffer = "";
 
