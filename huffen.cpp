@@ -7,10 +7,88 @@
 using namespace std;
 
 namespace MTNELL004{
+		//-----------------special member functions for HuffmanNode:--------------------------------------------------------------------
+
+	//constructor 1
+	HuffmanNode::HuffmanNode(char let, int freq): letter(let), frequency(freq){
+		//std::cout<<"creating "<<letter<<" "<<frequency<<std::endl;
+	}
+	//constructor 2
+	HuffmanNode::HuffmanNode(int freq): frequency(freq){}
+	
+	//destructor
+	HuffmanNode::~HuffmanNode(void){
+		//no delete
+		//std::cout<<"killing "<<letter<<" "<<frequency<<std::endl;
+	}
+
+	//copy constructor
+	HuffmanNode::HuffmanNode(const HuffmanNode & hfn):frequency(hfn.frequency), letter(hfn.letter), left(hfn.left), right(hfn.right){}
+
+	//Move constructor
+	HuffmanNode::HuffmanNode(HuffmanNode && hfn): frequency(std::move(hfn.frequency)), letter(std::move(hfn.letter)){
+		left = std::move(hfn.left);
+		right = std::move(hfn.right);
+	}
+
+	//copy assignment operator
+	HuffmanNode & HuffmanNode::operator=(const HuffmanNode & hfn){
+		if(this!=&hfn){
+			letter = hfn.letter;
+			frequency = hfn.frequency;
+			left = hfn.left;
+			right = hfn.right;
+		}
+		return *this;
+	}
+
+	//move assignment operator
+	HuffmanNode & HuffmanNode::operator=(const HuffmanNode && hfn){
+		if(this!=&hfn){
+			letter = std::move(hfn.letter);
+			frequency = std::move(hfn.frequency);
+			left = std::move(hfn.left);
+			right = std::move(hfn.right);
+		}
+		return *this;
+	}
+
+	//---------------special member functions for HuffmanTree-----------------------------------------------------------------------
+
+	//constructor 
+	HuffmanTree::HuffmanTree(){}
+
+	//destructor
+	HuffmanTree::~HuffmanTree(void){
+		//deallocate codeTable and freqmap
+		//set head to nullptr
+	}
+
+	//------------------useful functions-----------------------------------------------------------------------------------------
 
     bool compare::operator()(const HuffmanNode& a, const HuffmanNode& b){
         return a.frequency > b.frequency; 
     } 
+
+    int bin_to_dec(int n){ 
+	    int dec = 0; 
+	    int base = 1; 
+	    int temp = n; 
+	    while (temp) { 
+	        int last = temp % 10; 
+	        temp = temp/10; 
+	        dec += last*base; 
+	        base = base*2; 
+	    } 
+	    return dec; 
+	} 
+
+	string dec_to_bin(int num){
+		string s = std::bitset<8>(num).to_string();
+		return s;
+	}
+
+	//--------------------HuffmanTree function definitions----------------------------------------------------------------------
 
 	void HuffmanTree::buildMap(string input_file){
 		ifstream file (input_file);
@@ -61,6 +139,7 @@ namespace MTNELL004{
 		if(node->left == NULL){
 			char let = node->letter;
 			codeTable[let] = code;
+			reverseCodeTable[code] = let;
 		}
 		else{
 			string strLeft = code; strLeft.append("0");
@@ -118,19 +197,39 @@ namespace MTNELL004{
 		myfile << "Field Count: "<<codeTable.size()<<"\n"<<endl;
 
 		for( const auto& n : codeTable ) {
-       	 	myfile << "Character: " << n.first << " Code:" << n.second << "\n";
+       	 	myfile << "Character: " << n.first << " Code:" << n.second << "\n"<<endl;
     	}
-    	double cc = (buffer.length()/8) + (buffer.length()%8 ? 1 : 0);
-    	myfile << "Compression Ratio: " << cc<< "\n";
+
+    	cout<<"The final bitstream is:\n"<<cstr<<"\n"<<endl;
+
+    	double bytes = (buffer.length()/8) + (buffer.length()%8 ? 1 : 0);
+    	myfile << "This would require: " << bytes<< " bytes to store\n"<<endl;
+
+    	//compression ratio
+    	double cc = bytes/(buffer.length()*8);
+    	myfile << "The compression ratio is: " << cc<< " [(bit string size in bytes)/(input chars in bytes)]\n"<<endl;
+
+
 
 		myfile.close();
 	}
 
 	void HuffmanTree::convertToByteArray(std::string input_file){
+
+		cout<<"Converting to bitstream and writing to binary file: 'binary_out.raw' and writing header file 'header.dat'..."<<endl;
+		//create binary file and header file name
+	    stringstream bfile;
+	    stringstream hFile;
+	    bfile << "binary_out.raw";
+	    hFile << "header.dat";
+	    string binary_file = bfile.str();
+	    string header_file = hFile.str();
+
 		//construct buffer
 		string buffer = "";
-		string input;
 
+		//For each character in the input_file, consult the code-table and append the appropriate code to buffer.
+		string input;
 		ifstream file_in (input_file);
 		if(!file_in){
 			cerr << "File open failed"<< endl;
@@ -146,12 +245,117 @@ namespace MTNELL004{
     			buffer.append(codeTable[c]);
 			}
 		}
+
+		//store the origional length of buffer and then do zero-padding so that the length is divisable by 8. Thus making it easy to split into bytes.
+		int len_of_origional = buffer.length();
+
+		while(!((buffer.length())%8==0)){
+			buffer.append("0");
+		}
+
+		//create a memory block 
+		int length =buffer.length();
+		int num_bytes = (int)length/8;
+		char* byte = new char[num_bytes];
+
+		//split the buffer sections of 8. Then convert the substring byte to an integer and convert to from binary to decimal and store in the byte array.
+		for(int i = 0; i< num_bytes; i++){
+			string str = buffer.substr ((i*8),(i*8)+8);
+			stringstream temp_stream(str); 
+			int num  = 0;
+			int bin = 0; 
+    		temp_stream >> bin;
+    		num = bin_to_dec(bin);
+    		byte[i] = num;
+		}
+
+		//create and write to output binary file
+	    ofstream binary;
+	  	binary.open (binary_file,  ios::out | ios::binary);
+	  	binary.write (byte,length);
+	  	binary.close();
+
+	  	//create header file that will have the number of bits in the file.
+	    ofstream myHeaderFile;
+	  	myHeaderFile.open (header_file);
+	    myHeaderFile << len_of_origional;
+	    myHeaderFile.close();
 		
-		std::string bit_string = "101";
-	    std::bitset<3> b(bit_string);       // [1,0,1,0,1,0,1,0]
-	    //unsigned char c = ( b.to_ulong() & 0xFF);
-	    //std::cout << static_cast<int>(c); // prints 170
-	    //cout<<b.size();
+	}
+
+	void HuffmanTree::readAndUnpack(void){
+		cout<<"Reading and unpacking the bitstream from 'binary_out.raw'..."<<endl;
+		int num_bits;
+		int num_bytes;
+
+		//create binary file and header file name
+	    stringstream bfile;
+	    stringstream hFile;
+	    bfile << "binary_out.raw";
+	    hFile << "header.dat";
+	    string binary_file = bfile.str();
+	    string header_file = hFile.str();
+
+	    //read from header file
+		ifstream header_in;
+		header_in.open(header_file);
+		if(!header_in){
+			cerr << "Header file not found\n";
+		}
+		else{
+			//read in number of bits in final sequence
+			header_in >> num_bits;
+		}
+		header_in.close();
+
+		int length = num_bits+num_bits%8;
+		num_bytes = length/8;
+
+		//read in the binary file 
+		char* bytes = new char[length];
+		ifstream binary_in;
+
+		binary_in.open (binary_file,  ios::in | ios::binary);
+		if(!binary_in){
+			cout << binary_file << " not found\n";
+		}
+		else{
+			binary_in.read (bytes,length);
+		}
+		binary_in.close();
+
+
+		string buffer = "";
+
+		int i;
+		for(i=0; i<num_bytes-1; i++){
+			int num = (int)(unsigned char)bytes[i];
+			buffer.append(dec_to_bin(num));
+		}
+
+		int num = (int)(unsigned char)bytes[i];
+		string temp = dec_to_bin(num);
+		temp = temp.substr(0,(length-num_bits));
+		buffer.append(temp);
+
+		cout<<buffer<<endl;
+
+
+		//--------------------------Unpack---------------------------------
+		string message = "";
+		string temp_code = "";
+
+		for(char& c : buffer) {
+		    temp_code.push_back(c);
+		    if(reverseCodeTable[temp_code]){
+		    	message.push_back(reverseCodeTable[temp_code]);
+		    	temp_code = "";
+		    }
+
+		}
+
+		cout<<message<<endl;
+
 	}
 
 	unordered_map<char, int> HuffmanTree::getFreqMap(void){
@@ -172,64 +376,6 @@ namespace MTNELL004{
 		return codeTable;
 	}
 
-	
-
-	//-----------------special member functions for HuffmanNode:--------------------------------------------------------------------
-
-	//constructor 1
-	HuffmanNode::HuffmanNode(char let, int freq): letter(let), frequency(freq){
-		//std::cout<<"creating "<<letter<<" "<<frequency<<std::endl;
-	}
-	//constructor 2
-	HuffmanNode::HuffmanNode(int freq): frequency(freq){}
-	
-	//destructor
-	HuffmanNode::~HuffmanNode(void){
-		//no delete
-		//std::cout<<"killing "<<letter<<" "<<frequency<<std::endl;
-	}
-
-	//copy constructor
-	HuffmanNode::HuffmanNode(const HuffmanNode & hfn):frequency(hfn.frequency), letter(hfn.letter), left(hfn.left), right(hfn.right){}
-
-	//Move constructor
-	HuffmanNode::HuffmanNode(HuffmanNode && hfn): frequency(std::move(hfn.frequency)), letter(std::move(hfn.letter)){
-		left = std::move(hfn.left);
-		right = std::move(hfn.right);
-	}
-
-	//copy assignment operator
-	HuffmanNode & HuffmanNode::operator=(const HuffmanNode & hfn){
-		if(this!=&hfn){
-			letter = hfn.letter;
-			frequency = hfn.frequency;
-			left = hfn.left;
-			right = hfn.right;
-		}
-		return *this;
-	}
-
-	//move assignment operator
-	HuffmanNode & HuffmanNode::operator=(const HuffmanNode && hfn){
-		if(this!=&hfn){
-			letter = std::move(hfn.letter);
-			frequency = std::move(hfn.frequency);
-			left = std::move(hfn.left);
-			right = std::move(hfn.right);
-		}
-		return *this;
-	}
-
-	//---------------special member functions for HuffmanTree-----------------------------------------------------------------------
-
-	//constructor 
-	HuffmanTree::HuffmanTree(){}
-
-	//destructor
-	HuffmanTree::~HuffmanTree(void){
-		//deallocate codeTable and freqmap
-		//set head to nullptr
-	}
 
 
 }

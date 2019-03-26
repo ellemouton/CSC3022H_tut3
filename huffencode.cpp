@@ -12,6 +12,7 @@ int main(int argc, char * argv[]){
 		tree.buildCodeTable();
 		tree.compressData(input_file, output_file);
 		tree.convertToByteArray(input_file);
+		tree.readAndUnpack();
 	}
 	else{
 		cout << "invalid number of arguments\n";

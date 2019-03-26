@@ -9,6 +9,7 @@
 #include <string>
 #include <unordered_map>
 #include <queue>
+#include <sstream>
 #include <memory>
 #include <vector>
 #include <bitset>
@@ -25,6 +26,7 @@ namespace MTNELL004{
 		private:
 			
 			std::unordered_map<char, std::string> codeTable;
+			std::unordered_map<std::string, char> reverseCodeTable;
 			std::shared_ptr<HuffmanNode> head;
 			std::unordered_map<char, int> freqmap;
 
@@ -41,6 +43,7 @@ namespace MTNELL004{
 			void buildCodeTable(void);
 			void compressData(std::string input_file, std::string output_file);
 			void convertToByteArray(std::string input_file);
+			void readAndUnpack(void);
 			void recurse(std::string code, std::shared_ptr<HuffmanNode> &node);
 			std::unordered_map<char, int> getFreqMap(void); //for unit tests
 			std::shared_ptr<HuffmanNode> getHeadNode(void); //for unit tests
@@ -82,7 +85,8 @@ namespace MTNELL004{
 			std::shared_ptr<HuffmanNode> getRight(void); //for unit tests
 	};
 
-	
+	int bin_to_dec(int n);
+	std::string dec_to_bin(int num);
 
 }
 
