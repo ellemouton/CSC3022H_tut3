@@ -55,6 +55,7 @@ namespace MTNELL004{
 
     	head = make_shared<HuffmanNode>(pq.top());
 	}
+
 	void HuffmanTree::recurse(string code, shared_ptr<HuffmanNode> &node){
 		
 		if(node->left == NULL){
@@ -125,6 +126,34 @@ namespace MTNELL004{
 		myfile.close();
 	}
 
+	void HuffmanTree::convertToByteArray(std::string input_file){
+		//construct buffer
+		string buffer = "";
+		string input;
+
+		ifstream file_in (input_file);
+		if(!file_in){
+			cerr << "File open failed"<< endl;
+		}
+		else{
+			string line;
+		    while (getline (file_in,line) ){
+		      input.append(line);
+		    }
+		    file_in.close();
+
+		    for(char& c : input) {
+    			buffer.append(codeTable[c]);
+			}
+		}
+		
+		std::string bit_string = "101";
+	    std::bitset<3> b(bit_string);       // [1,0,1,0,1,0,1,0]
+	    //unsigned char c = ( b.to_ulong() & 0xFF);
+	    //std::cout << static_cast<int>(c); // prints 170
+	    //cout<<b.size();
+	}
+
 	unordered_map<char, int> HuffmanTree::getFreqMap(void){
 		return freqmap;
 	}
@@ -143,7 +172,64 @@ namespace MTNELL004{
 		return codeTable;
 	}
 
+	
 
+	//-----------------special member functions for HuffmanNode:--------------------------------------------------------------------
+
+	//constructor 1
+	HuffmanNode::HuffmanNode(char let, int freq): letter(let), frequency(freq){
+		//std::cout<<"creating "<<letter<<" "<<frequency<<std::endl;
+	}
+	//constructor 2
+	HuffmanNode::HuffmanNode(int freq): frequency(freq){}
+	
+	//destructor
+	HuffmanNode::~HuffmanNode(void){
+		//no delete
+		//std::cout<<"killing "<<letter<<" "<<frequency<<std::endl;
+	}
+
+	//copy constructor
+	HuffmanNode::HuffmanNode(const HuffmanNode & hfn):frequency(hfn.frequency), letter(hfn.letter), left(hfn.left), right(hfn.right){}
+
+	//Move constructor
+	HuffmanNode::HuffmanNode(HuffmanNode && hfn): frequency(std::move(hfn.frequency)), letter(std::move(hfn.letter)){
+		left = std::move(hfn.left);
+		right = std::move(hfn.right);
+	}
+
+	//copy assignment operator
+	HuffmanNode & HuffmanNode::operator=(const HuffmanNode & hfn){
+		if(this!=&hfn){
+			letter = hfn.letter;
+			frequency = hfn.frequency;
+			left = hfn.left;
+			right = hfn.right;
+		}
+		return *this;
+	}
+
+	//move assignment operator
+	HuffmanNode & HuffmanNode::operator=(const HuffmanNode && hfn){
+		if(this!=&hfn){
+			letter = std::move(hfn.letter);
+			frequency = std::move(hfn.frequency);
+			left = std::move(hfn.left);
+			right = std::move(hfn.right);
+		}
+		return *this;
+	}
+
+	//---------------special member functions for HuffmanTree-----------------------------------------------------------------------
+
+	//constructor 
+	HuffmanTree::HuffmanTree(){}
+
+	//destructor
+	HuffmanTree::~HuffmanTree(void){
+		//deallocate codeTable and freqmap
+		//set head to nullptr
+	}
 
 
 }
