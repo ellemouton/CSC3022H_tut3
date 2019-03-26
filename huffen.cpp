@@ -18,13 +18,16 @@ namespace MTNELL004{
 			cerr << "File open failed"<< endl;
 		}
 		else{
-			char c;
-			while(!file.eof()){
-				file >> c;
-				freqmap[c]++;
+			string input = "";
+			string line;
+		    while (getline (file,line) ){
+		      input.append(line);
+		    }
+		    file.close();
+
+		    for(char& c : input) {
+    			freqmap[c]++;
 			}
-			freqmap[c]--;
-			file.close();
 		}
 	}
 
@@ -80,18 +83,22 @@ namespace MTNELL004{
 	void HuffmanTree::compressData(string input_file, string output_file){
 		//construct buffer
 		string buffer = "";
+		string input;
 
 		ifstream file_in (input_file);
 		if(!file_in){
 			cerr << "File open failed"<< endl;
 		}
 		else{
-			char c;
-			while(!file_in.eof()){
-				file_in >> c;
-				buffer.append(codeTable[c]);
+			string line;
+		    while (getline (file_in,line) ){
+		      input.append(line);
+		    }
+		    file_in.close();
+
+		    for(char& c : input) {
+    			buffer.append(codeTable[c]);
 			}
-			file_in.close();
 		}
 		
 		char * cstr = new char [buffer.length()+1];
@@ -108,6 +115,7 @@ namespace MTNELL004{
 		ofstream myfile;
 		myfile.open(output_file);
 		myfile << "Field Count: "<<codeTable.size()<<"\n"<<endl;
+
 		for( const auto& n : codeTable ) {
        	 	myfile << "Character: " << n.first << " Code:" << n.second << "\n";
     	}
