@@ -72,9 +72,9 @@ namespace MTNELL004{
 
 		recurse(code, head);
 
-		for( const auto& n : codeTable ) {
+		/*for( const auto& n : codeTable ) {
        	 	std::cout << "Key:[" << n.first << "] Value:[" << n.second << "]\n";
-    	}
+    	}*/
 	}
 
 	void HuffmanTree::compressData(string input_file, string output_file){
@@ -96,7 +96,7 @@ namespace MTNELL004{
 		
 		char * cstr = new char [buffer.length()+1];
   		std::strcpy (cstr, buffer.c_str());
-  		cout<<cstr<<endl;
+  		//cout<<cstr<<endl;
 
 		string buffer_file = "buffer.dat";
 		ofstream outputBufferFile;
@@ -131,5 +131,11 @@ namespace MTNELL004{
 	shared_ptr<HuffmanNode> HuffmanNode::getRight(void){
 		return right;
 	}
+	unordered_map<char, std::string> HuffmanTree::getCodeTable(void){
+		return codeTable;
+	}
+
+
+
 
 }

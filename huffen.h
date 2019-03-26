@@ -44,6 +44,7 @@ namespace MTNELL004{
 			void recurse(std::string code, std::shared_ptr<HuffmanNode> &node);
 			std::unordered_map<char, int> getFreqMap(void); //for unit tests
 			std::shared_ptr<HuffmanNode> getHeadNode(void); //for unit tests
+			std::unordered_map<char, std::string> getCodeTable(void);
 			
 	};
 
