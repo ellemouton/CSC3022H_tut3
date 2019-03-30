@@ -55,7 +55,7 @@ namespace MTNELL004{
 			void buildCodeTable(void);
 			void compressData(std::string input_file, std::string output_file);
 			void convertToByteArray(std::string input_file);
-			void readAndUnpack(void);
+			std::string readAndUnpack(void);
 			void recurse(std::string code, std::shared_ptr<HuffmanNode> &node);
 			std::unordered_map<char, int> getFreqMap(void); //for unit tests
 			std::shared_ptr<HuffmanNode> getHeadNode(void); //for unit tests

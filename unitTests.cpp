@@ -127,6 +127,69 @@ TEST_CASE( "Check Compression of data", "[compress]" ) {
 	REQUIRE(s=="01100111011101001001000000000");
 }
 
+TEST_CASE( "Check Conversion to byte array", "[byteArray]" ) {
+	//create a known input file
+	string input_file_name = "input_test.txt";
+	string output_file_name = "output_test";
+	ofstream input;
+	input.open(input_file_name);
+	input << "abbcccdddd"<<endl;
+	input.close();
+
+	//create new tree, build frequency map and then call the buildTree() function.
+	MTNELL004::HuffmanTree tree;
+	tree.buildMap(input_file_name);
+	tree.buildTree();
+	tree.buildCodeTable();
+	tree.convertToByteArray(input_file_name);
+
+	//open the file that 'tree.convertToByteArray()' would have written to
+	stringstream bfile;
+    stringstream hFile;
+    bfile << "binary_out.raw";
+    hFile << "header.dat";
+    string binary_file = bfile.str();
+    string header_file = hFile.str();
+
+    //read from header file
+    int num_bits;
+	ifstream header_in;
+	header_in.open(header_file);
+	if(!header_in){
+		cerr << "Header file not found\n";
+	}
+	else{
+		//read in number of bits in final sequence
+		header_in >> num_bits;
+	}
+	header_in.close();
+
+	REQUIRE(num_bits==29);
+
+}
+
+TEST_CASE( "Check that unpacking is correct", "[unpacking]" ) {
+	//create a known input file
+
+	string message = "Testing testing...testing 123";
+
+	string input_file_name = "input_test.txt";
+	ofstream input;
+	input.open(input_file_name);
+	input << message<<endl;
+	input.close();
+
+	MTNELL004::HuffmanTree tree;
+	tree.buildMap(input_file_name);
+	tree.buildTree();
+	tree.buildCodeTable();
+	tree.convertToByteArray(input_file_name);
+	string uncompressed_message = tree.readAndUnpack();
+
+	//check that uncompressed message is the same as the original message
+	REQUIRE(uncompressed_message==message);
+}
+
 
 
 

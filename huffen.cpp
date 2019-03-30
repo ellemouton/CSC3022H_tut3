@@ -299,7 +299,7 @@ namespace MTNELL004{
 		
 	}
 
-	void HuffmanTree::readAndUnpack(void){
+	string HuffmanTree::readAndUnpack(void){
 		cout<<"Reading and unpacking the bitstream from 'binary_out.raw'...\n"<<endl;
 		int num_bits;
 		int num_bytes;
@@ -368,7 +368,7 @@ namespace MTNELL004{
 
 		cout<<"The unpacked message is: "<<endl;
 		cout<<message<<endl;
-
+		return message;
 	}
 
 	unordered_map<char, int> HuffmanTree::getFreqMap(void){
