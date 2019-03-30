@@ -38,6 +38,18 @@ namespace MTNELL004{
 			//destructor
 			~HuffmanTree(void);
 
+			//copy constructor
+			HuffmanTree(const HuffmanTree & hft);
+
+			//Move constructor
+			HuffmanTree(HuffmanTree && hft);
+
+			//copy assignment operator
+			HuffmanTree & operator=(const HuffmanTree & hft);
+
+			//move assignment operator
+			HuffmanTree & operator=(const HuffmanTree && hft);
+
 			void buildMap(std::string input_file);
 			void buildTree(void);
 			void buildCodeTable(void);

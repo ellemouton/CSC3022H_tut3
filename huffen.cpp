@@ -7,7 +7,7 @@
 using namespace std;
 
 namespace MTNELL004{
-		//-----------------special member functions for HuffmanNode:--------------------------------------------------------------------
+	//-----------------special member functions for HuffmanNode:--------------------------------------------------------------------
 
 	//constructor 1
 	HuffmanNode::HuffmanNode(char let, int freq): letter(let), frequency(freq){
@@ -60,8 +60,8 @@ namespace MTNELL004{
 
 	//destructor
 	HuffmanTree::~HuffmanTree(void){
-		//deallocate codeTable and freqmap
 		//set head to nullptr
+		head= nullptr;
 	}
 
 	//------------------useful functions-----------------------------------------------------------------------------------------
@@ -91,6 +91,9 @@ namespace MTNELL004{
 	//--------------------HuffmanTree function definitions----------------------------------------------------------------------
 
 	void HuffmanTree::buildMap(string input_file){
+
+		cout<<"Building Map...\n"<<endl;
+
 		ifstream file (input_file);
 		if(!file){
 			cerr << "File open failed"<< endl;
@@ -103,6 +106,9 @@ namespace MTNELL004{
 		    }
 		    file.close();
 
+		    cout<<"Text input from file is:"<<endl;
+			cout<<input<<"\n"<<endl;
+
 		    for(char& c : input) {
     			freqmap[c]++;
 			}
@@ -110,6 +116,8 @@ namespace MTNELL004{
 	}
 
 	void HuffmanTree::buildTree(){
+		cout<<"Building Tree...\n"<<endl;
+
 		//create a priority tree
 		priority_queue<HuffmanNode, std::vector<HuffmanNode>, compare> pq; //automatic variable
 
@@ -151,16 +159,20 @@ namespace MTNELL004{
 	}
 
 	void HuffmanTree::buildCodeTable(void){
-		string code = "0";
+		cout<<"Building Code table...\n"<<endl;
 
+		string code = "0";
 		recurse(code, head);
 
-		/*for( const auto& n : codeTable ) {
+		cout<<"The code table is as follows:"<<endl;
+		for( const auto& n : codeTable ) {
        	 	std::cout << "Key:[" << n.first << "] Value:[" << n.second << "]\n";
-    	}*/
+    	}
 	}
 
 	void HuffmanTree::compressData(string input_file, string output_file){
+		cout<<"\nCompressing data and writing the output string to: 'buffer.dat' and writing the code table to '"<<output_file<<".hdr'...\n"<<endl;
+
 		//construct buffer
 		string buffer = "";
 		string input;
@@ -183,7 +195,6 @@ namespace MTNELL004{
 		
 		char * cstr = new char [buffer.length()+1];
   		std::strcpy (cstr, buffer.c_str());
-  		//cout<<cstr<<endl;
 
 		string buffer_file = "buffer.dat";
 		ofstream outputBufferFile;
@@ -209,14 +220,18 @@ namespace MTNELL004{
     	double cc = bytes/(buffer.length()*8);
     	myfile << "The compression ratio is: " << cc<< " [(bit string size in bytes)/(input chars in bytes)]\n"<<endl;
 
-
+    	//print info to screen:
+    	cout<<"Size of origional message: "<<buffer.length()*8<<" bytes"<<endl;
+    	cout<<"Size of compressed message: "<<bytes<<" bytes"<<endl;
+    	cout<<"The compression ratio is: "<<cc<<"\n"<<endl;
 
 		myfile.close();
 	}
 
+
 	void HuffmanTree::convertToByteArray(std::string input_file){
 
-		cout<<"Converting to bitstream and writing to binary file: 'binary_out.raw' and writing header file 'header.dat'..."<<endl;
+		cout<<"Converting to bitstream and writing to binary file: 'binary_out.raw' and writing header file 'header.dat'...\n"<<endl;
 		//create binary file and header file name
 	    stringstream bfile;
 	    stringstream hFile;
@@ -257,22 +272,23 @@ namespace MTNELL004{
 		int length =buffer.length();
 		int num_bytes = (int)length/8;
 		char* byte = new char[num_bytes];
-
+		
 		//split the buffer sections of 8. Then convert the substring byte to an integer and convert to from binary to decimal and store in the byte array.
 		for(int i = 0; i< num_bytes; i++){
-			string str = buffer.substr ((i*8),(i*8)+8);
+			string str = buffer.substr ((i*8),8);
 			stringstream temp_stream(str); 
 			int num  = 0;
 			int bin = 0; 
     		temp_stream >> bin;
     		num = bin_to_dec(bin);
-    		byte[i] = num;
+    		byte[i] = num; 
 		}
+
 
 		//create and write to output binary file
 	    ofstream binary;
 	  	binary.open (binary_file,  ios::out | ios::binary);
-	  	binary.write (byte,length);
+	  	binary.write (byte,num_bytes);
 	  	binary.close();
 
 	  	//create header file that will have the number of bits in the file.
@@ -284,7 +300,7 @@ namespace MTNELL004{
 	}
 
 	void HuffmanTree::readAndUnpack(void){
-		cout<<"Reading and unpacking the bitstream from 'binary_out.raw'..."<<endl;
+		cout<<"Reading and unpacking the bitstream from 'binary_out.raw'...\n"<<endl;
 		int num_bits;
 		int num_bytes;
 
@@ -308,7 +324,7 @@ namespace MTNELL004{
 		}
 		header_in.close();
 
-		int length = num_bits+num_bits%8;
+		int length = num_bits+(8-num_bits%8);
 		num_bytes = length/8;
 
 		//read in the binary file 
@@ -328,17 +344,13 @@ namespace MTNELL004{
 		string buffer = "";
 
 		int i;
-		for(i=0; i<num_bytes-1; i++){
+		for(i=0; i<num_bytes; i++){
 			int num = (int)(unsigned char)bytes[i];
 			buffer.append(dec_to_bin(num));
 		}
 
-		int num = (int)(unsigned char)bytes[i];
-		string temp = dec_to_bin(num);
-		temp = temp.substr(0,(length-num_bits));
-		buffer.append(temp);
-
-		cout<<buffer<<endl;
+		//remove the zero padding
+		buffer =buffer.substr(0, num_bits);
 
 
 		//--------------------------Unpack---------------------------------
@@ -354,6 +366,7 @@ namespace MTNELL004{
 
 		}
 
+		cout<<"The unpacked message is: "<<endl;
 		cout<<message<<endl;
 
 	}
