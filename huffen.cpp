@@ -10,17 +10,13 @@ namespace MTNELL004{
 	//-----------------special member functions for HuffmanNode:--------------------------------------------------------------------
 
 	//constructor 1
-	HuffmanNode::HuffmanNode(char let, int freq): letter(let), frequency(freq){
-		//std::cout<<"creating "<<letter<<" "<<frequency<<std::endl;
-	}
+	HuffmanNode::HuffmanNode(char let, int freq): letter(let), frequency(freq){}
+
 	//constructor 2
 	HuffmanNode::HuffmanNode(int freq): frequency(freq){}
 	
 	//destructor
-	HuffmanNode::~HuffmanNode(void){
-		//no delete
-		//std::cout<<"killing "<<letter<<" "<<frequency<<std::endl;
-	}
+	HuffmanNode::~HuffmanNode(void){}
 
 	//copy constructor
 	HuffmanNode::HuffmanNode(const HuffmanNode & hfn):frequency(hfn.frequency), letter(hfn.letter), left(hfn.left), right(hfn.right){}
@@ -60,8 +56,42 @@ namespace MTNELL004{
 
 	//destructor
 	HuffmanTree::~HuffmanTree(void){
-		//set head to nullptr
 		head= nullptr;
+	}
+
+	//copy constructor
+	HuffmanTree::HuffmanTree(const HuffmanTree & hft):codeTable(hft.codeTable), reverseCodeTable(hft.reverseCodeTable), freqmap(hft.freqmap), head(hft.head){
+	}
+		
+
+	//Move constructor
+	HuffmanTree::HuffmanTree(HuffmanTree && hft){
+		codeTable = move(hft.codeTable);
+		reverseCodeTable = move(hft.reverseCodeTable);
+		freqmap = move(hft.freqmap);
+		head = move(hft.head);
+	}
+
+	//copy assignment operator
+	HuffmanTree & HuffmanTree::operator=(const HuffmanTree & hft){
+		if(this!=&hft){
+			codeTable = hft.codeTable;
+			reverseCodeTable = hft.reverseCodeTable;
+			freqmap = hft.freqmap;
+			head = hft.head;
+		}
+		return *this;
+	}
+
+	//move assignment operator
+	HuffmanTree & HuffmanTree::operator=(const HuffmanTree && hft){
+		if(this!=&hft){
+			codeTable = move(hft.codeTable);
+			reverseCodeTable = move(hft.reverseCodeTable);
+			freqmap = move(hft.freqmap);
+			head = move(hft.head);
+		}
+		return *this;
 	}
 
 	//------------------useful functions-----------------------------------------------------------------------------------------

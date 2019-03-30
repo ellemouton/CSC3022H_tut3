@@ -1,0 +1,60 @@
+Name: Elle Mouton
+Student Number: MTNELL004
+CSC3022H (CSC3023F) Tutorial 3
+________________________________________________________________________________________
+CONTENT:
+1. How to compile and run the program
+2. How to compile and run the unit tests
+3. Description of each of the files used in the program
+________________________________________________________________________________________
+
+1. Compiling and running the program:
+
+To compile the files, navigate into the project folder and type 'make' in the terminal.
+To run the program, use tho following command:
+
+	./huffencode <inputFile> <OutputFile>
+
+	for example: ./huffencode input.txt out
+
+2. Compile and run the unit tests:
+
+To compile the files, navigate into the project folder and type 'make unitTests' in the terminal (a few warnings might appear but they are not errors). 
+Then to run the unit tests, use the following command:
+
+	./unitTests
+
+
+3. Description of each file
+
+_______________
+huffencode.cpp
+---------------
+
+This is the driver file of the program and thus contains the "main()" function. In the main function, the command line arguments are read in.
+A HuffmanTree object is created and then each of the functions required to build the tree are called as well as the functions to compress and uncompress data.
+
+_______________
+huffen.h
+---------------
+
+This file contains all the method declarations associated with manipulating the HuffmanNode and HuffmanTree objects. This includes the constructors and destructors for each class as well as all the special member functions for each class.  It contains the declarations of all the functions required by the HuffmanTree and HUffmanNode classes. All the functions in this file are defined within the namespace: MTNELL004.
+
+_____________
+huffen.cpp
+-------------
+
+This file contains all the functions and class definitions that are declared in the huffen.h file. All the declarations are declared within the namespace: MTNELL004.
+
+_____________
+unitTests.cpp
+-------------
+
+This file is the friver file for unit testing. It contains various tests that test each of the functions created in the huffen.cpp file by using a known input and known outputs to determine if the results of the program are infact correct.
+
+_________
+Makefile:
+----------
+
+The Makefile contains various dependency rules required for compilation of both the program as well as the for the unitTests program. It also has a 'clean' rule.
+
