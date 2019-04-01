@@ -189,19 +189,19 @@ namespace MTNELL004{
 	}
 
 	void HuffmanTree::buildCodeTable(void){
-		//cout<<"Building Code table...\n"<<endl;
+		cout<<"Building Code table...\n"<<endl;
 
 		string code = "0";
 		recurse(code, head);
 
-		/*cout<<"The code table is as follows:"<<endl;
+		cout<<"The code table is as follows:"<<endl;
 		for( const auto& n : codeTable ) {
        	 	std::cout << "Key:[" << n.first << "] Value:[" << n.second << "]\n";
-    	}*/
+    	}
 	}
 
 	void HuffmanTree::compressData(string input_file, string output_file){
-		//cout<<"\nCompressing data and writing the output string to: 'buffer.dat' and writing the code table to '"<<output_file<<".hdr'...\n"<<endl;
+		cout<<"\nCompressing data and writing the output string to: 'buffer.dat' and writing the code table to '"<<output_file<<".hdr'...\n"<<endl;
 
 		//construct buffer
 		string buffer = "";
@@ -241,7 +241,7 @@ namespace MTNELL004{
        	 	myfile << "Character: " << n.first << " Code:" << n.second << "\n"<<endl;
     	}
 
-    	//cout<<"The final bitstream is:\n"<<cstr<<"\n"<<endl;
+    	cout<<"The final bitstream is:\n"<<cstr<<"\n"<<endl;
 
     	double bytes = (buffer.length()/8) + (buffer.length()%8 ? 1 : 0);
     	myfile << "This would require: " << bytes<< " bytes to store\n"<<endl;
@@ -251,9 +251,9 @@ namespace MTNELL004{
     	myfile << "The compression ratio is: " << cc<< " [(bit string size in bytes)/(input chars in bytes)]\n"<<endl;
 
     	//print info to screen:
-    	//cout<<"Size of origional message: "<<buffer.length()*8<<" bytes"<<endl;
-    	//cout<<"Size of compressed message: "<<bytes<<" bytes"<<endl;
-    	//cout<<"The compression ratio is: "<<cc<<"\n"<<endl;
+    	cout<<"Size of origional message: "<<buffer.length()*8<<" bytes"<<endl;
+    	cout<<"Size of compressed message: "<<bytes<<" bytes"<<endl;
+    	cout<<"The compression ratio is: "<<cc<<"\n"<<endl;
 
 		myfile.close();
 	}
@@ -261,7 +261,7 @@ namespace MTNELL004{
 
 	void HuffmanTree::convertToByteArray(std::string input_file){
 
-		//cout<<"Converting to bitstream and writing to binary file: 'binary_out.raw' and writing header file 'header.dat'...\n"<<endl;
+		cout<<"Converting to bitstream and writing to binary file: 'binary_out.raw' and writing header file 'header.dat'...\n"<<endl;
 		//create binary file and header file name
 	    stringstream bfile;
 	    stringstream hFile;
@@ -330,7 +330,7 @@ namespace MTNELL004{
 	}
 
 	string HuffmanTree::readAndUnpack(void){
-		//cout<<"Reading and unpacking the bitstream from 'binary_out.raw'...\n"<<endl;
+		cout<<"Reading and unpacking the bitstream from 'binary_out.raw'...\n"<<endl;
 		int num_bits;
 		int num_bytes;
 
@@ -396,8 +396,8 @@ namespace MTNELL004{
 
 		}
 
-		//cout<<"The unpacked message is: "<<endl;
-		//cout<<message<<endl;
+		cout<<"The unpacked message is: "<<endl;
+		cout<<message<<endl;
 		return message;
 	}
 

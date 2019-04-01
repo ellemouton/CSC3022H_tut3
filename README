@@ -17,6 +17,8 @@ To run the program, use tho following command:
 
 	for example: ./huffencode input.txt out
 
+	The output information file will be written to <Outputfile>.hdr and the bitstream in ASCI form will wil written to 'buffer.dat' and the byte array will be written to 'binary_out.raw' with the header file 'header.dat'.
+
 2. Compile and run the unit tests:
 
 To compile the files, navigate into the project folder and type 'make unitTests' in the terminal (a few warnings might appear but they are not errors). 
@@ -50,7 +52,8 @@ _____________
 unitTests.cpp
 -------------
 
-This file is the friver file for unit testing. It contains various tests that test each of the functions created in the huffen.cpp file by using a known input and known outputs to determine if the results of the program are infact correct.
+This file is the friver file for unit testing. It contains various tests that test each of the functions created in the huffen.cpp file by using a known input and known outputs to determine if the results of the program are in fact correct.
+There are also unit tests to test each of the special member functions for both the HuffmanNode and HuffmanTree classes.
 
 _________
 Makefile:
