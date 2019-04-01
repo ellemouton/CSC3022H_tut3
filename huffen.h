@@ -48,7 +48,7 @@ namespace MTNELL004{
 			HuffmanTree & operator=(const HuffmanTree & hft);
 
 			//move assignment operator
-			HuffmanTree & operator=(const HuffmanTree && hft);
+			HuffmanTree & operator=(HuffmanTree && hft);
 
 			void buildMap(std::string input_file);
 			void buildTree(void);
@@ -70,6 +70,7 @@ namespace MTNELL004{
 			std::shared_ptr<HuffmanNode> right;
 
 		public: 
+			
 			int frequency;
 			char letter;
 
@@ -91,8 +92,10 @@ namespace MTNELL004{
 			HuffmanNode & operator=(const HuffmanNode & hfn);
 
 			//move assignment operator
-			HuffmanNode & operator=(const HuffmanNode && hfn);
+			HuffmanNode & operator=(HuffmanNode && hfn);
 
+			void setLeft(HuffmanNode l); //for unit tests
+			void setRight(HuffmanNode l); //for unit tests
 			std::shared_ptr<HuffmanNode> getLeft(void); //for unit tests
 			std::shared_ptr<HuffmanNode> getRight(void); //for unit tests
 	};

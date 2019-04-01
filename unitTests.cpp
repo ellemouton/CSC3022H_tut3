@@ -5,6 +5,7 @@ using namespace std;
 
 
 TEST_CASE( "Frequency Map is correct", "[frequency]" ) {
+	cout << "---------------------Testing Frequency Map---------------------" << endl;
 
 	//create a known input file
 	string file_name = "input_test.txt";
@@ -26,7 +27,7 @@ TEST_CASE( "Frequency Map is correct", "[frequency]" ) {
 }
 
 TEST_CASE( "Tree is built correctly", "[tree]" ) {
-
+	cout << "---------------------Testing tree Build---------------------" << endl;
 	SECTION( "Input file with 1 character" ) {
 		//create a known input file
 		string file_name = "input_test.txt";
@@ -45,6 +46,7 @@ TEST_CASE( "Tree is built correctly", "[tree]" ) {
 	}
 
 	SECTION( "Input a longer string of characters" ) {
+
 		//create a known input file
 		string file_name = "input_test.txt";
 		ofstream input;
@@ -76,6 +78,8 @@ TEST_CASE( "Tree is built correctly", "[tree]" ) {
 }
 
 TEST_CASE( "Check Code table", "[code]" ) {
+	cout << "---------------------Testing code table---------------------" << endl;
+
 	//create a known input file
 	string file_name = "input_test.txt";
 	ofstream input;
@@ -100,6 +104,9 @@ TEST_CASE( "Check Code table", "[code]" ) {
 }
 
 TEST_CASE( "Check Compression of data", "[compress]" ) {
+	cout << "---------------------Testing compression of data---------------------" << endl;
+
+
 	//create a known input file
 	string input_file_name = "input_test.txt";
 	string output_file_name = "output_test";
@@ -128,6 +135,8 @@ TEST_CASE( "Check Compression of data", "[compress]" ) {
 }
 
 TEST_CASE( "Check Conversion to byte array", "[byteArray]" ) {
+	cout << "---------------------Testing conversion to byte array---------------------" << endl;
+
 	//create a known input file
 	string input_file_name = "input_test.txt";
 	string output_file_name = "output_test";
@@ -169,6 +178,8 @@ TEST_CASE( "Check Conversion to byte array", "[byteArray]" ) {
 }
 
 TEST_CASE( "Check that unpacking is correct", "[unpacking]" ) {
+	cout << "---------------------Testing unpacking from byte array---------------------" << endl;
+
 	//create a known input file
 
 	string message = "Testing testing...testing 123";
@@ -191,6 +202,213 @@ TEST_CASE( "Check that unpacking is correct", "[unpacking]" ) {
 }
 
 
+
+TEST_CASE( "Check special member functions of Huffman Node", "[member_node]" ) {
+	
+	SECTION( "HuffmanNode copy constructor" ) {
+		cout << "---------------------Testing Copy constructor of HuffmanNode---------------------" << endl;
+		MTNELL004::HuffmanNode hn1('a', 1);
+		MTNELL004::HuffmanNode hn2('b', 1);
+		MTNELL004::HuffmanNode hn3('c', 1);
+		hn1.setLeft(hn2);
+		hn1.setRight(hn3);
+
+		REQUIRE(hn1.letter=='a');
+		REQUIRE(hn1.frequency==1);
+		REQUIRE(hn1.getLeft());
+		REQUIRE(hn1.getRight());
+
+		MTNELL004::HuffmanNode hn4(hn1);
+
+		REQUIRE_FALSE(&hn1==&hn4);
+
+		REQUIRE(hn1.letter=='a');
+		REQUIRE(hn1.frequency==1);
+		REQUIRE(hn1.getLeft()->letter == 'b');
+		REQUIRE(hn1.getRight()->letter == 'c');
+
+		REQUIRE(hn4.letter=='a');
+		REQUIRE(hn4.frequency==1);
+		REQUIRE(hn4.getLeft()->letter == 'b');
+		REQUIRE(hn4.getRight()->letter == 'c');
+
+	}
+
+	SECTION( "HuffmanNode move constructor" ) {
+		cout << "---------------------Testing Move constructor of HuffmanNode---------------------" << endl;
+		MTNELL004::HuffmanNode hn1('a', 1);
+		MTNELL004::HuffmanNode hn2('b', 1);
+		MTNELL004::HuffmanNode hn3('c', 1);
+		hn1.setLeft(hn2);
+		hn1.setRight(hn3);
+
+		REQUIRE(hn1.letter=='a');
+		REQUIRE(hn1.frequency==1);
+		REQUIRE(hn1.getLeft()->letter == 'b');
+		REQUIRE(hn1.getRight()->letter == 'c');
+
+		MTNELL004::HuffmanNode hn4(std::move(hn1));
+
+		REQUIRE(hn1.letter=='a');
+		REQUIRE(hn1.frequency==1);
+		REQUIRE(hn1.getLeft()==nullptr);
+		REQUIRE(hn1.getRight()==nullptr);
+
+		REQUIRE(hn4.letter=='a');
+		REQUIRE(hn4.frequency==1);
+		REQUIRE(hn4.getLeft()->letter == 'b');
+		REQUIRE(hn4.getRight()->letter == 'c');
+	}
+
+	SECTION( "HuffmanNode copy assignment operator" ) {
+		cout << "---------------------Testing Copy Assignment of HuffmanNode---------------------" << endl;
+		MTNELL004::HuffmanNode hn1('a', 1);
+		MTNELL004::HuffmanNode hn2('b', 1);
+		MTNELL004::HuffmanNode hn3('c', 1);
+		hn1.setLeft(hn2);
+		hn1.setRight(hn3);
+
+		MTNELL004::HuffmanNode hn4('d', 1);
+		MTNELL004::HuffmanNode hn5('e', 1);
+		MTNELL004::HuffmanNode hn6('f', 1);
+		hn4.setLeft(hn5);
+		hn4.setRight(hn6);
+
+		REQUIRE(hn1.letter=='a');
+		REQUIRE(hn1.frequency==1);
+		REQUIRE(hn1.getLeft()->letter == 'b');
+		REQUIRE(hn1.getRight()->letter == 'c');
+
+		REQUIRE(hn4.letter=='d');
+		REQUIRE(hn4.frequency==1);
+		REQUIRE(hn4.getLeft()->letter == 'e');
+		REQUIRE(hn4.getRight()->letter == 'f');
+		
+		hn1 = hn4;
+
+		REQUIRE(hn1.letter=='d');
+		REQUIRE(hn1.frequency==1);
+		REQUIRE(hn1.getLeft()->letter == 'e');
+		REQUIRE(hn1.getRight()->letter == 'f');
+
+		REQUIRE(hn4.letter=='d');
+		REQUIRE(hn4.frequency==1);
+		REQUIRE(hn4.getLeft()->letter == 'e');
+		REQUIRE(hn4.getRight()->letter == 'f');
+	}
+
+	SECTION( "HuffmanNode move assignment operator" ) {
+		cout << "---------------------Testing Move Assignment of HuffmanNode---------------------" << endl;
+		MTNELL004::HuffmanNode hn1('a', 1);
+		MTNELL004::HuffmanNode hn2('b', 1);
+		MTNELL004::HuffmanNode hn3('c', 1);
+		hn1.setLeft(hn2);
+		hn1.setRight(hn3);
+
+		MTNELL004::HuffmanNode hn4('d', 1);
+		MTNELL004::HuffmanNode hn5('e', 1);
+		MTNELL004::HuffmanNode hn6('f', 1);
+		hn4.setLeft(hn5);
+		hn4.setRight(hn6);
+
+		REQUIRE(hn1.letter=='a');
+		REQUIRE(hn1.frequency==1);
+		REQUIRE(hn1.getLeft()->letter == 'b');
+		REQUIRE(hn1.getRight()->letter == 'c');
+
+		REQUIRE(hn4.letter=='d');
+		REQUIRE(hn4.frequency==1);
+		REQUIRE(hn4.getLeft()->letter == 'e');
+		REQUIRE(hn4.getRight()->letter == 'f');
+		
+		hn1 = std::move(hn4);
+
+		REQUIRE(hn1.letter=='d');
+		REQUIRE(hn1.frequency==1);
+		REQUIRE(hn1.getLeft()->letter == 'e');
+		REQUIRE(hn1.getRight()->letter == 'f');
+
+		REQUIRE(hn4.letter=='d');
+		REQUIRE(hn4.frequency==1);
+		REQUIRE(hn4.getLeft() ==nullptr);
+		REQUIRE(hn4.getRight() ==nullptr);
+	}
+
+}
+
+TEST_CASE( "Check special member functions of HuffmanTree", "[member_tree]" ) {
+	
+	SECTION( "HuffmanTree copy constructor" ) {
+		cout << "---------------------Testing Copy constructor of HuffmanTree---------------------" << endl;
+		MTNELL004::HuffmanTree t1;
+		t1.buildMap("input.txt");
+		t1.buildTree();
+
+		MTNELL004::HuffmanTree t2(t1);
+
+		REQUIRE(t1.getHeadNode()->frequency == t2.getHeadNode()->frequency);
+		REQUIRE_FALSE(&t1== &t2);
+
+	}
+
+	SECTION( "HuffmanTree move constructor" ) {
+		cout << "---------------------Testing Move constructor of HuffmanTree---------------------" << endl;
+		MTNELL004::HuffmanTree t1;
+		t1.buildMap("input.txt");
+		t1.buildTree();
+
+		REQUIRE(t1.getHeadNode());
+
+		MTNELL004::HuffmanTree t2(std::move(t1));
+
+		REQUIRE(t2.getHeadNode());
+		REQUIRE(t1.getHeadNode()==nullptr);
+
+	}
+
+	SECTION( "HuffmanTree copy assignment operator" ) {
+		cout << "---------------------Testing Copy Assignment of HuffmanTree---------------------" << endl;
+		MTNELL004::HuffmanTree t1;
+		t1.buildMap("input.txt");
+		t1.buildTree();
+
+		MTNELL004::HuffmanTree t2;
+		t2.buildMap("input2.txt");
+		t2.buildTree();
+
+		REQUIRE(t1.getHeadNode());
+		REQUIRE(t2.getHeadNode());
+
+		t2 = t1;
+
+		REQUIRE(t1.getHeadNode());
+		REQUIRE(t2.getHeadNode());
+		REQUIRE(t2.getHeadNode()->frequency==t1.getHeadNode()->frequency);
+
+	}
+
+	SECTION( "HuffmanTree move assignment operator" ) {
+		cout << "---------------------Testing Move Assignment of HuffmanTree---------------------" << endl;
+		
+		MTNELL004::HuffmanTree t1;
+		t1.buildMap("input.txt");
+		t1.buildTree();
+
+		MTNELL004::HuffmanTree t2;
+		t2.buildMap("input2.txt");
+		t2.buildTree();
+
+		REQUIRE(t1.getHeadNode());
+		REQUIRE(t2.getHeadNode());
+
+		t2 = std::move(t1);
+
+		REQUIRE(t2.getHeadNode());
+		REQUIRE(t1.getHeadNode()==nullptr);
+		
+	}
+
+}
 
 
 

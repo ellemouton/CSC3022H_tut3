@@ -39,7 +39,7 @@ namespace MTNELL004{
 	}
 
 	//move assignment operator
-	HuffmanNode & HuffmanNode::operator=(const HuffmanNode && hfn){
+	HuffmanNode & HuffmanNode::operator=(HuffmanNode && hfn){
 		if(this!=&hfn){
 			letter = std::move(hfn.letter);
 			frequency = std::move(hfn.frequency);
@@ -84,7 +84,7 @@ namespace MTNELL004{
 	}
 
 	//move assignment operator
-	HuffmanTree & HuffmanTree::operator=(const HuffmanTree && hft){
+	HuffmanTree & HuffmanTree::operator=(HuffmanTree && hft){
 		if(this!=&hft){
 			codeTable = move(hft.codeTable);
 			reverseCodeTable = move(hft.reverseCodeTable);
@@ -122,7 +122,7 @@ namespace MTNELL004{
 
 	void HuffmanTree::buildMap(string input_file){
 
-		cout<<"Building Map...\n"<<endl;
+		//cout<<"Building Map...\n"<<endl;
 
 		ifstream file (input_file);
 		if(!file){
@@ -136,8 +136,8 @@ namespace MTNELL004{
 		    }
 		    file.close();
 
-		    cout<<"Text input from file is:"<<endl;
-			cout<<input<<"\n"<<endl;
+		    //cout<<"Text input from file is:"<<endl;
+			//cout<<input<<"\n"<<endl;
 
 		    for(char& c : input) {
     			freqmap[c]++;
@@ -146,7 +146,7 @@ namespace MTNELL004{
 	}
 
 	void HuffmanTree::buildTree(){
-		cout<<"Building Tree...\n"<<endl;
+		//cout<<"Building Tree...\n"<<endl;
 
 		//create a priority tree
 		priority_queue<HuffmanNode, std::vector<HuffmanNode>, compare> pq; //automatic variable
@@ -189,19 +189,19 @@ namespace MTNELL004{
 	}
 
 	void HuffmanTree::buildCodeTable(void){
-		cout<<"Building Code table...\n"<<endl;
+		//cout<<"Building Code table...\n"<<endl;
 
 		string code = "0";
 		recurse(code, head);
 
-		cout<<"The code table is as follows:"<<endl;
+		/*cout<<"The code table is as follows:"<<endl;
 		for( const auto& n : codeTable ) {
        	 	std::cout << "Key:[" << n.first << "] Value:[" << n.second << "]\n";
-    	}
+    	}*/
 	}
 
 	void HuffmanTree::compressData(string input_file, string output_file){
-		cout<<"\nCompressing data and writing the output string to: 'buffer.dat' and writing the code table to '"<<output_file<<".hdr'...\n"<<endl;
+		//cout<<"\nCompressing data and writing the output string to: 'buffer.dat' and writing the code table to '"<<output_file<<".hdr'...\n"<<endl;
 
 		//construct buffer
 		string buffer = "";
@@ -241,7 +241,7 @@ namespace MTNELL004{
        	 	myfile << "Character: " << n.first << " Code:" << n.second << "\n"<<endl;
     	}
 
-    	cout<<"The final bitstream is:\n"<<cstr<<"\n"<<endl;
+    	//cout<<"The final bitstream is:\n"<<cstr<<"\n"<<endl;
 
     	double bytes = (buffer.length()/8) + (buffer.length()%8 ? 1 : 0);
     	myfile << "This would require: " << bytes<< " bytes to store\n"<<endl;
@@ -251,9 +251,9 @@ namespace MTNELL004{
     	myfile << "The compression ratio is: " << cc<< " [(bit string size in bytes)/(input chars in bytes)]\n"<<endl;
 
     	//print info to screen:
-    	cout<<"Size of origional message: "<<buffer.length()*8<<" bytes"<<endl;
-    	cout<<"Size of compressed message: "<<bytes<<" bytes"<<endl;
-    	cout<<"The compression ratio is: "<<cc<<"\n"<<endl;
+    	//cout<<"Size of origional message: "<<buffer.length()*8<<" bytes"<<endl;
+    	//cout<<"Size of compressed message: "<<bytes<<" bytes"<<endl;
+    	//cout<<"The compression ratio is: "<<cc<<"\n"<<endl;
 
 		myfile.close();
 	}
@@ -261,7 +261,7 @@ namespace MTNELL004{
 
 	void HuffmanTree::convertToByteArray(std::string input_file){
 
-		cout<<"Converting to bitstream and writing to binary file: 'binary_out.raw' and writing header file 'header.dat'...\n"<<endl;
+		//cout<<"Converting to bitstream and writing to binary file: 'binary_out.raw' and writing header file 'header.dat'...\n"<<endl;
 		//create binary file and header file name
 	    stringstream bfile;
 	    stringstream hFile;
@@ -330,7 +330,7 @@ namespace MTNELL004{
 	}
 
 	string HuffmanTree::readAndUnpack(void){
-		cout<<"Reading and unpacking the bitstream from 'binary_out.raw'...\n"<<endl;
+		//cout<<"Reading and unpacking the bitstream from 'binary_out.raw'...\n"<<endl;
 		int num_bits;
 		int num_bytes;
 
@@ -396,8 +396,8 @@ namespace MTNELL004{
 
 		}
 
-		cout<<"The unpacked message is: "<<endl;
-		cout<<message<<endl;
+		//cout<<"The unpacked message is: "<<endl;
+		//cout<<message<<endl;
 		return message;
 	}
 
@@ -415,6 +415,14 @@ namespace MTNELL004{
 	shared_ptr<HuffmanNode> HuffmanNode::getRight(void){
 		return right;
 	}
+
+	void HuffmanNode::setLeft(HuffmanNode l){
+		left = make_shared<HuffmanNode>(l);
+	} 
+	void HuffmanNode::setRight(HuffmanNode r){
+		right = make_shared<HuffmanNode>(r);
+	}
+
 	unordered_map<char, std::string> HuffmanTree::getCodeTable(void){
 		return codeTable;
 	}
